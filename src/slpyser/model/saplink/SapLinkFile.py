@@ -30,7 +30,8 @@ class NuggetFile(SapLinkFile):
                  FilePath,
                  AbapClasses=None,
                  AbapFunctionGroups=None,
-                 AbapPrograms=None):
+                 AbapPrograms=None,
+                 AbapMessageClasses=None):
         """
         Assemble the object with all objects parsed from file.
         """
@@ -38,6 +39,7 @@ class NuggetFile(SapLinkFile):
         self.__classes = AbapClasses
         self.__function_groups = AbapFunctionGroups
         self.__programs = AbapPrograms
+        self.__message_classes = AbapMessageClasses
 
         # FIXME: Storing all functions in another attribute to easy development.
         # In the future rewrite it to find inside Function Groups on demand.
@@ -59,6 +61,10 @@ class NuggetFile(SapLinkFile):
     @property
     def function_modules(self):
         return self.__function_modules
+
+    @property
+    def message_classes(self):
+        return self.__message_classes
 
     @property
     def programs(self):

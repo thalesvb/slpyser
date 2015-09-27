@@ -13,6 +13,7 @@ from slpyser.model.abap_objects.AbapFunctionGroup import AbapFunctionGroup, \
 from slpyser.model.abap_objects.AbapProgram import AbapProgram
 from slpyser.model.abap_objects.AbapTextPool import AbapTextElement, \
     AbapClassDocumentation
+from slpyser.model.abap_objects.AbapMessageClass import AbapMessageClass
 
 
 class SAPLinkContentHandle(xml.sax.ContentHandler):
@@ -84,6 +85,11 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
                 self._endInterfaceMethod,
             ],
             'PARAMETER': [
+                self._startClassMethodParameter,
+                None,
+                None,
+            ],
+            'EXCEPTION': [
                 self._startClassMethodParameter,
                 None,
                 None,
@@ -185,6 +191,18 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
                 self._endTextPoolTextElement
             ],
 
+            # Message Class elements
+            'MSAG': [
+                self._startMessageClass,
+                None,
+                self._endMessageClass
+            ],
+            'T100': [
+                self._startMessageClassMessage,
+                None,
+                None,
+            ],
+
             # General elements
             'SOURCE': [
                 self._startSourceCode,
@@ -210,9 +228,10 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         ]
 
         # Attributes to be returned after parsing
-        self._abapClasses = {}
-        self._abapFunctionGroups = {}
-        self._abapPrograms = {}
+        self._abap_classes = {}
+        self._abap_function_groups = {}
+        self._abap_message_classes = {}
+        self._abap_programs = {}
 
         # Internal attributes, store references of current processed abap objects
         self.__current_class = None
@@ -223,6 +242,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         self.__current_text_pool_reference = None
         self.__current_class_documentation_reference = None
         self.__current_text_language = None
+        self.__current_message_class = None
 
         # Helper attributes
         self.__current_tag = None
@@ -230,15 +250,19 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     @property
     def abapClasses(self):
-        return self._abapClasses
+        return self._abap_classes
 
     @property
     def abapFunctionGroups(self):
-        return self._abapFunctionGroups
+        return self._abap_function_groups
+
+    @property
+    def abapMessageClasses(self):
+        return self._abap_message_classes
 
     @property
     def abapPrograms(self):
-        return self._abapPrograms
+        return self._abap_programs
 
     def startElement(self, name, attrs):
         """Parses start element"""
@@ -247,14 +271,14 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         self.__current_tag_stack.append(self.__current_tag)
         startElementHandler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[0]
         if startElementHandler is not None:
-            startElementHandler(name, attrs)
+            startElementHandler(name.upper(), attrs)
 
     def characters(self, content):
         """
         Parses inner contents of current element.
         This method is called for each new line inside that element.
         """
-        charactersHandler = self._matrix_element_case_handler.get(self.__current_tag,self.__unhandled_element)[1]
+        charactersHandler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[1]
         if charactersHandler is not None:
             charactersHandler(content)
 
@@ -264,7 +288,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
             self.__logger.error('ERROR parsing file, current element was %s but closing element was %s' % (self.__current_tag, name.upper()))
         endElementHandler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[2]
         if endElementHandler is not None:
-            endElementHandler(name)
+            endElementHandler(name.upper())
         self.__current_tag_stack.pop()
         # FIXME: Append None to currentTagStack to avoid little hack?
         self.__current_tag = self.__current_tag_stack[-1] if len(self.__current_tag_stack) > 0 else None
@@ -303,7 +327,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     def _endClass(self, name):
         self.__logger.debug('End class')
-        self.abapClasses[self.__current_class.name] = self.__current_class
+        self._abap_classes[self.__current_class.name] = self.__current_class
         self.__current_class = None
 
     def _startClassAttribute(self, name, attrs):
@@ -369,7 +393,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     def _startClassMethodParameter(self, name, attrs):
         self.__logger.debug('Start class method parameter')
-        name = attrs.get('SCONAME', '')
+        param_name = attrs.get('SCONAME', '')
         decl_type = attrs.get('PARDECLTYP', '')
         pass_type = attrs.get('PARPASSTYP', '')
         typ_type = attrs.get('TYPTYPE', '')
@@ -378,12 +402,15 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         ref_method = attrs.get('CMPNAME')
         ref_class = attrs.get('CLSNAME')
 
-        methodParameter = AbapClassMethodParameter(Name=name,
+        if name == 'EXCEPTION':
+            decl_type = 'EXCP'
+
+        methodParameter = AbapClassMethodParameter(Name=param_name,
                                                    DeclType=decl_type,
                                                    PassType=pass_type,
                                                    TypType=typ_type,
                                                    Type=type_)
-        self.__current_class.methods[ref_method].parameters[name] = methodParameter
+        self.__current_class.methods[ref_method].parameters[param_name] = methodParameter
 
     def _startClassMethodRedefinition(self, name, attrs):
         self.__logger.debug('Start Method Redefinition')
@@ -461,7 +488,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     def _endFunctionGroup(self, name):
         self.__logger.debug('End function group')
-        self.abapFunctionGroups[self.__current_function_group.name] = self.__current_function_group
+        self._abap_function_groups[self.__current_function_group.name] = self.__current_function_group
         self.__current_function_group = None
 
     def _startFunctionGroupMainProgram(self, name, attrs):
@@ -551,10 +578,10 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         description = attrs.get('DESCRIPT', '')
 
         interfaceMethod = AbapClassMethod(Name=name,
-                                      DefinitionClassName=definition_class_name,
-                                      DeclType=declarationType,
-                                      Exposure=exposure,
-                                      Description=description)
+                                          DefinitionClassName=definition_class_name,
+                                          DeclType=declarationType,
+                                          Exposure=exposure,
+                                          Description=description)
 
         self.__current_class.methods[interfaceMethod.name] = interfaceMethod
         self.__current_source_code_reference = interfaceMethod.source_code
@@ -564,6 +591,39 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         self.__logger.debug('End interface method')
         self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
         self.__current_source_code_reference = None
+
+    def _startMessageClass(self, name, attrs):
+        self.__logger.debug('Start message class')
+        name = attrs.get('ARBGB')
+        original_language = attrs.get('MASTERLANG')
+        responsible = attrs.get('RESPUSER', '')
+        short_text = attrs.get('STEXT', '')
+
+        message_class = AbapMessageClass(Name=name,
+                                         OriginalLanguage=original_language,
+                                         Responsible=responsible,
+                                         ShortText=short_text)
+        self.__current_message_class = message_class
+
+    def _endMessageClass(self, name):
+        msg_class = self.__current_message_class
+        self._abap_message_classes[msg_class.name] = msg_class
+        self.__current_message_class = None
+
+    def _startMessageClassMessage(self, name, attrs):
+        self.__logger.debug('Start Message Class Message')
+        language = attrs.get('SPRSL')
+        number = attrs.get('MSGNR')
+        text = attrs.get('TEXT')
+
+        message = AbapMessageClass.Message(Language=language,
+                                           Number=number,
+                                           Text=text)
+
+        if self.__current_message_class.language_mapping.get(language) == None:
+            self.__current_message_class.language_mapping[language] = {}
+
+        self.__current_message_class.language_mapping[language][number] = message
 
     def _startProgram(self, name, attrs):
         self.__logger.debug('Start program')
@@ -590,7 +650,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     def _endProgram(self, name):
         self.__logger.debug('End program')
-        self.abapPrograms[self.__current_program.name] = self.__current_program
+        self._abap_programs[self.__current_program.name] = self.__current_program
         self.__current_program = None
         self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
         self.__current_source_code_reference = None

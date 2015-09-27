@@ -18,12 +18,13 @@ class _ParserInterface:
         file = NuggetFile(FilePath=FilePath,
                           AbapClasses=parser.getClasses(),
                           AbapFunctionGroups=parser.getFunctionGroups(),
+                          AbapMessageClasses=parser.getMessageClasses(),
                           AbapPrograms=parser.getPrograms())
         return file
 
 
 def parse(FilePath):
     """
-    All parsing using the library should use this method to parse file
+    All parsing using the library should use this function to parse file
     """
     return _ParserInterface.parse_file(FilePath)

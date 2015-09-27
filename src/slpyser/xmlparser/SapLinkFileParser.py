@@ -45,6 +45,10 @@ class SapLinkFileParser(object):
 
         return self.__handler.abapFunctionGroups
 
+    def getMessageClasses(self):
+
+        return self.__handler.abapMessageClasses
+
     def getPrograms(self):
 
         return self.__handler.abapPrograms

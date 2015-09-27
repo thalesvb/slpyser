@@ -208,9 +208,9 @@ class AbapClassMethodParameter(AbapObject):
                  Type):
 
         self.__name = Name
-        self.__declaration_type = DeclType,
-        self.__pass_type = PassType,
-        self.__typ_type = TypType,
+        self.__declaration_type = DeclType
+        self.__pass_type = PassType
+        self.__typ_type = TypType
         self.__type = Type
 
     @property
