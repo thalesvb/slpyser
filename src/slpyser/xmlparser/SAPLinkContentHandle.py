@@ -324,11 +324,13 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
                               IsUnicode=unicode)
 
         self.__current_class = abapClass
+        self.__current_text_pool_reference = abapClass.text_pool
 
     def _endClass(self, name):
         self.__logger.debug('End class')
         self._abap_classes[self.__current_class.name] = self.__current_class
         self.__current_class = None
+        self.__current_text_pool_reference = None
 
     def _startClassAttribute(self, name, attrs):
         self.__logger.debug('Start class attribute')
@@ -654,6 +656,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         self.__current_program = None
         self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
         self.__current_source_code_reference = None
+        self.__current_text_pool_reference = None
 
     def _startSourceCode(self, name, attrs):
         self.__logger.debug('Start Source Code')
@@ -692,13 +695,18 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
     def _startTextPoolTextElement(self, name, attrs):
         self.__logger.debug('Start Text Pool Text Element')
         textId = attrs.get('ID')
+        key = attrs.get('KEY')
         entry = attrs.get('ENTRY')
         length = attrs.get('LENGTH')
         textElement = AbapTextElement(TextId=textId,
+                                      TextKey=key,
                                       TextEntry=entry,
                                       Length=length)
-        self.__current_text_pool_reference.addTextElement(Language=self.__current_text_language,
-                                                          TextElement=textElement)
+        if self.__current_text_pool_reference is not None:
+            self.__current_text_pool_reference.addTextElement(Language=self.__current_text_language,
+                                                              TextElement=textElement)
+        else:
+            self.__logger.warn('[FIXME] A text pool''s entry "%s" was found but the current abap object wasn''t expecting a text pool.', entry)
 
     def _charactersTextPoolTextElement(self, content):
         pass

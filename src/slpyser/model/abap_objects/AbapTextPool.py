@@ -34,9 +34,12 @@ class AbapTextElement(AbapObject):
 
     def __init__(self,
                  TextId,
+                 TextKey,
                  TextEntry,
                  Length):
+
         self.__id = TextId
+        self.__key = TextKey
         self.__entry = TextEntry
         self.__length = Length
 
@@ -49,6 +52,10 @@ class AbapTextElement(AbapObject):
     @property
     def id(self):
         return self.__id
+
+    @property
+    def key(self):
+        return self.__key
 
     @property
     def entry(self):

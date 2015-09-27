@@ -5,6 +5,7 @@ Created on 04/06/2015
 '''
 from slpyser.model.abap_objects.AbapObject import AbapObject
 from slpyser.model.abap_objects.AbapSourceCode import AbapSourceCode
+from slpyser.model.abap_objects.AbapTextPool import AbapTextPool
 
 
 class AbapClass(AbapObject):
@@ -83,6 +84,9 @@ class AbapClass(AbapObject):
         self.__redefined_methods = {}
         """Methods that are redefined from parent class."""
 
+        self.__text_pool = AbapTextPool()
+        """Class's text pool."""
+
     @property
     def name(self):
         return self.__name
@@ -146,6 +150,10 @@ class AbapClass(AbapObject):
     @property
     def private_section(self):
         return self.__private_section
+
+    @property
+    def text_pool(self):
+        return self.__text_pool
 
     @property
     def unicode(self):
