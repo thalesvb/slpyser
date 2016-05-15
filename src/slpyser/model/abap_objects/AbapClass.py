@@ -75,6 +75,15 @@ class AbapClass(AbapObject):
         self.__private_section = AbapSourceCode()
         """The private section of the class (source code), stored in subelement private_section from element CLAS."""
 
+        self.__local_implementation = AbapSourceCode()
+        """Class's local implementation."""
+
+        self.__local_macros = AbapSourceCode()
+        """Class's local macros."""
+
+        self.__local_types = AbapSourceCode()
+        """Class's Local types."""
+
         self.__attributes = {}
         """Class attributes"""
 
@@ -150,6 +159,18 @@ class AbapClass(AbapObject):
     @property
     def private_section(self):
         return self.__private_section
+    
+    @property
+    def local_implementation(self):
+        return self.__local_implementation
+
+    @property
+    def local_macros(self):
+        return self.__local_macros
+
+    @property
+    def local_types(self):
+        return self.__local_types
 
     @property
     def text_pool(self):

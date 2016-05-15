@@ -61,17 +61,17 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
             ],
             'LOCALIMPLEMENTATION': [
                 self._startClassLocalImplementation,
-                None,
+                self._charactersClassLocalImplementation,
                 self._endClassLocalImplementation
             ],
             'LOCALTYPES': [
                 self._startClassLocalTypes,
-                None,
+                self._charactersClassLocalTypes,
                 self._endClassLocalTypes
             ],
             'LOCALMACROS': [
                 self._startClassLocalMacros,
-                None,
+                self._charactersClassLocalMacros,
                 self._endClassLocalMacros
             ],
             'METHOD': [
@@ -461,21 +461,42 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     def _startClassLocalImplementation(self, name, attrs):
         self.__logger.debug('Start class local implementation')
+        self.__current_source_code_reference = self.__current_class.local_implementation
+        self.__current_source_code_reference.source_code = []
+
+    def _charactersClassLocalImplementation(self, content):
+        self.__current_source_code_reference.source_code.append(content)
 
     def _endClassLocalImplementation(self, name):
         self.__logger.debug('End class local implementation')
+        self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
+        self.__current_source_code_reference = None
 
     def _startClassLocalTypes(self, name, attrs):
         self.__logger.debug('Start class local types')
+        self.__current_source_code_reference = self.__current_class.local_types
+        self.__current_source_code_reference.source_code = []
+        
+    def _charactersClassLocalTypes(self, content):
+        self.__current_source_code_reference.source_code.append(content)
 
     def _endClassLocalTypes(self, name):
         self.__logger.debug('End class local types')
+        self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
+        self.__current_source_code_reference = None
 
     def _startClassLocalMacros(self, name, attrs):
         self.__logger.debug('Start class local macros')
+        self.__current_source_code_reference = self.__current_class.local_macros
+        self.__current_source_code_reference.source_code = []
+
+    def _charactersClassLocalMacros(self, content):
+        self.__current_source_code_reference.source_code.append(content)
 
     def _endClassLocalMacros(self, name):
-        self.__logger.debug('End class local types')
+        self.__logger.debug('End class local macros')
+        self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
+        self.__current_source_code_reference = None
 
     def _startFunctionGroup(self, name, attrs):
         self.__logger.debug('Start function group')
