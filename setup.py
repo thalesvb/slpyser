@@ -18,15 +18,15 @@ packages = [
 
 
 buildOptions = dict(
-    build_base='../build/'
+    build_base='./build/'
 )
 
 bdistOptions = dict(
-    dist_dir='../bdist/'
+    dist_dir='./bdist/'
 )
 
 sdistOptions = dict(
-    dist_dir='../sdist/'
+    dist_dir='./sdist/'
 )
 
 options = dict(
