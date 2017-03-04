@@ -7,7 +7,7 @@ import logging
 import xml.sax
 
 from slpyser.model.abap_objects.AbapClass import AbapClass, AbapClassMethod, \
-    AbapClassAttribute, AbapClassMethodParameter
+    AbapClassAttribute, AbapClassMethodParameter, AbapClassInterface
 from slpyser.model.abap_objects.AbapFunctionGroup import AbapFunctionGroup, \
     AbapFunctionGroupMainProgram, AbapFunctionModule
 from slpyser.model.abap_objects.AbapProgram import AbapProgram
@@ -43,6 +43,11 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
                 self._startClassInheritance,
                 None,
                 self._endClassInheritance
+            ],
+            'INTF': [
+                self._startClassInterface,
+                None,
+                self._endClassInterface
             ],
             'PUBLICSECTION': [
                 self._startClassPublicSection,
@@ -369,6 +374,44 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     def _endClassInheritance(self, name):
         self.__logger.debug('End class inheritance')
+
+    def _startClassInterface(self, name, attrs):
+        self.__logger.debug('Start Class interface')
+
+        name = attrs.get('CLSNAME', '')
+        author = attrs.get('AUTHOR', '')
+        created_on = attrs.get('CREATEDON', '')
+        changed_by = attrs.get('CHANGEDBY', '')
+        changed_on = attrs.get('CHANGEDON', '')
+        description = attrs.get('DESCRIPT', '')
+        exposure = attrs.get('EXPOSURE', '')
+        original_language = attrs.get('LANGU', '')
+        final = attrs.get('CLSFINAL', '')
+        fixed_point_arithmetic = attrs.get('FIXPT', '')
+        parentClassName = attrs.get('REFCLSNAME', '')
+        unicode = attrs.get('UNICODE', '')
+
+        abapClassInterface = AbapClassInterface(Name=name,
+                              Author=author,
+                              CreatedOn=created_on,
+                              ChangedBy=changed_by,
+                              ChangedOn=changed_on,
+                              Exposure=exposure,
+                              OriginalLanguage=original_language,
+                              Description=description,
+                              ParentClassName=parentClassName,
+                              IsFinal=final,
+                              IsFixedPointArithmetic=fixed_point_arithmetic,
+                              IsUnicode=unicode)
+
+        self.__current_class = abapClassInterface
+        self.__current_text_pool_reference = abapClassInterface.text_pool
+
+    def _endClassInterface(self, name):
+        self.__logger.debug('End class interface')
+        self._abap_classes[self.__current_class.name] = self.__current_class
+        self.__current_class = None
+        self.__current_text_pool_reference = None
 
     def _startClassMethod(self, name, attrs):
         self.__logger.debug('Start class method')

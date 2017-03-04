@@ -181,6 +181,14 @@ class AbapClass(AbapObject):
         return self.__unicode
 
 
+class AbapClassInterface(AbapClass):
+    """
+    Representation of an ABAP class interface.
+    SAPLink representation is almost like a class, so this is a first
+    hackish version for class interface.
+    """
+    pass
+
 class AbapClassAttribute(AbapObject):
 
     def __init__(self,
