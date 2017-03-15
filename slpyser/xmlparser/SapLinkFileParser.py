@@ -41,6 +41,14 @@ class SapLinkFileParser(object):
 
         return self.__handler.abapClasses
 
+    def getDataElements(self):
+
+        return self.__handler.abapDataElements
+
+    def getDomains(self):
+
+        return self.__handler.abapDomains
+
     def getFunctionGroups(self):
 
         return self.__handler.abapFunctionGroups
@@ -52,3 +60,7 @@ class SapLinkFileParser(object):
     def getPrograms(self):
 
         return self.__handler.abapPrograms
+    
+    def getStructures(self):
+        
+        return self.__handler.abapStructures

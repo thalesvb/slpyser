@@ -31,7 +31,8 @@ class NuggetFile(SapLinkFile):
                  AbapClasses=None,
                  AbapFunctionGroups=None,
                  AbapPrograms=None,
-                 AbapMessageClasses=None):
+                 AbapMessageClasses=None,
+                 DataDictionary=None):
         """
         Assemble the object with all objects parsed from file.
         """
@@ -40,6 +41,7 @@ class NuggetFile(SapLinkFile):
         self.__function_groups = AbapFunctionGroups
         self.__programs = AbapPrograms
         self.__message_classes = AbapMessageClasses
+        self.__data_dictionary = DataDictionary
 
         # FIXME: Storing all functions in another attribute to easy development.
         # In the future rewrite it to find inside Function Groups on demand.
@@ -69,3 +71,7 @@ class NuggetFile(SapLinkFile):
     @property
     def programs(self):
         return self.__programs
+
+    @property
+    def data_dictionary(self):
+        return self.__data_dictionary
