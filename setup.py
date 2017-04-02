@@ -35,6 +35,8 @@ options = dict(
     sdist=sdistOptions,
 )
 
+test_suite = 'tests'
+
 setup(
     name=name,
     description=description,
@@ -44,4 +46,5 @@ setup(
     url=url,
     packages=packages,
     options=options,
+    test_suite=test_suite,
 )

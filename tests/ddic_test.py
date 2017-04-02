@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from context import slpyser, Util
+from tests.context import slpyser, Util
 
 class TestDDIC(unittest.TestCase):
 
