@@ -1,15 +1,23 @@
-'''
-Created on 22/07/2015
+"""
+Represents ABAP Dictionary (SE11) objects.BaseException
 
-@author: thales
-'''
+This module contains the definition of the following classes:
+
+ * :class:`.AbapDictionary`
+ * :class:`.AbapDataElement`
+ * :class:`.AbapDomain`
+ * :class:`.AbapTypeStructure`
+ * :class:`.AbapTypeTableType`
+"""
+
+
 from slpyser.model.abap_objects.AbapObject import AbapObject
 
 
 class AbapDictionary:
-    '''
-    Elements from ABAP Dictionary (SE11).
-    '''
+    """
+    Container for elements from ABAP Dictionary (SE11).
+    """
     def __init__(self,
                  Domains,
                  DataElements,
@@ -17,24 +25,33 @@ class AbapDictionary:
         self.__domains = Domains
         self.__data_elements = DataElements
         self.__structures = Structures
-    
+
     @property
     def domains(self):
+        """
+        See :class:`.AbapDomain`.
+        """
         return self.__domains
 
     @property
     def data_elements(self):
+        """
+        See :class:`.AbapDataElement`.
+        """
         return self.__data_elements
 
     @property
     def structures(self):
+        """
+        See :class:`.AbapTypeStructure`.
+        """
         return self.__structures
 
 
 class AbapDataElement(AbapObject):
-    '''
-    Tag DTEL \ DD04V
-    '''
+    """
+    Tag DTEL subtag DD04V
+    """
 
     def __init__(self,
                  Name,
@@ -55,8 +72,8 @@ class AbapDataElement(AbapObject):
                  LowerCase,
                  Decimals,
                  RefKind,
-                 RefType
-                 ):
+                 RefType):
+        super(AbapDataElement, self).__init__()
         self.__name = Name
         self.__original_language = OriginalLanguage
         self.__description = Description
@@ -79,9 +96,9 @@ class AbapDataElement(AbapObject):
 
 
 class AbapDomain(AbapObject):
-    '''
-    Tag DOMA \ DD01V
-    '''
+    """
+    Tag DOMA subtag DD01V
+    """
 
     def __init__(self,
                  Name,
@@ -93,9 +110,10 @@ class AbapDomain(AbapObject):
                  Decimals,
                  LowerCase,
                  MaskLength):
-        '''
+        """
         Constructor
-        '''
+        """
+        super(AbapDomain, self).__init__()
         self.__name = Name
         self.__original_language = OriginalLanguage
         self.__description = Description
@@ -144,17 +162,18 @@ class AbapDomain(AbapObject):
 
 
 class AbapTypeStructure(AbapObject):
-    '''
+    """
     Tag TABL
-    '''
+    """
 
     def __init__(self,
                  Name,
                  OriginalLanguage,
                  Description):
-        '''
+        """
         Constructor
-        '''
+        """
+        super(AbapTypeStructure, self).__init__()
         self.__name = Name
         self.__original_language = OriginalLanguage
         self.__description = Description
@@ -178,20 +197,24 @@ class AbapTypeStructure(AbapObject):
         return self.__fields
 
     class AbapStructureField(AbapObject):
-        '''
+        """
         Tag DD03P
-        '''
+        """
 
         def __init__(self,
                      Name,
                      Position,
                      DataType):
+            super(AbapTypeStructure.AbapStructureField, self).__init__()
             self.__name = Name
             self.__position = Position
             self.__data_type = DataType
 
         @property
         def name(self):
+            """
+            Structure field's name.
+            """
             return self.__name
 
         @property
@@ -204,9 +227,9 @@ class AbapTypeStructure(AbapObject):
 
 
 class AbapTypeTableType(AbapObject):
-    '''
+    """
     Tag TTYP
-    '''
+    """
 
     def __init__(self,
                  Name,
@@ -214,9 +237,10 @@ class AbapTypeTableType(AbapObject):
                  Description,
                  RowType,
                  RowKind):
-        '''
+        """
         Constructor
-        '''
+        """
+        super(AbapTypeTableType, self).__init__()
         self.__name = Name
         self.__original_language = OriginalLanguage
         self.__description = Description
@@ -225,6 +249,9 @@ class AbapTypeTableType(AbapObject):
 
     @property
     def name(self):
+        """
+        Table type's name.
+        """
         return self.__name
 
     @property
@@ -233,6 +260,9 @@ class AbapTypeTableType(AbapObject):
 
     @property
     def description(self):
+        """
+        Table type's description.
+        """
         return self.__description
 
     @property

@@ -16,9 +16,10 @@ class AbapFunctionGroup(AbapObject):
                  Name,
                  Description,
                  OriginalLanguage):
-        '''
+        """
         Constructor
-        '''
+        """
+        super(AbapFunctionGroup, self).__init__()
         self.__name = Name
         self.__description = Description
         self.__language = OriginalLanguage
@@ -27,10 +28,16 @@ class AbapFunctionGroup(AbapObject):
 
     @property
     def name(self):
+        """
+        Function Group's name.
+        """
         return self.__name
 
     @property
     def description(self):
+        """
+        Function group's description.
+        """
         return self.__description
 
     @property
@@ -47,13 +54,19 @@ class AbapFunctionGroup(AbapObject):
 
     @property
     def function_modules(self):
+        """
+        List of :class:`function modules <.AbapFunctionModule>` from this function group.
+        """
         return self.__function_modules
 
 
 class AbapFunctionGroupMainProgram(AbapObject):
-
+    """
+    Main program of the function group.
+    """
     def __init__(self,
                  Name):
+        super(AbapFunctionGroupMainProgram, self).__init__()
         self.__name = Name
         self.__source = AbapSourceCode()
 
@@ -75,6 +88,7 @@ class AbapFunctionModule(AbapObject):
                  FunctionGroup,
                  Name,
                  Description):
+        super(AbapFunctionModule, self).__init__()
         self.__function_group = FunctionGroup
         self.__name = Name
         self.__description = Description
@@ -131,6 +145,7 @@ class AbapFunctionModule(AbapObject):
                      IsOptional,
                      Type,
                      DefaultValue):
+            super(AbapFunctionModule.AbapFunctionModuleParameter, self).__init__()
             self.__name = Parameter
             self.__is_reference = IsReference
             self.__is_optional = IsOptional

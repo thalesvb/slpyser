@@ -7,8 +7,8 @@ Created on 17/06/2015
 import codecs
 import xml.sax
 
-from slpyser.xmlparser.SAPLinkContentHandle import SAPLinkContentHandle
 from xml.sax._exceptions import SAXParseException
+from slpyser.xmlparser.SAPLinkContentHandle import SAPLinkContentHandle
 
 
 class SapLinkFileParser(object):
@@ -37,17 +37,17 @@ class SapLinkFileParser(object):
             # It opens OK using UTF-8
             parser.parse(codecs.open(FilePath, 'r', 'utf-8'))
 
+    def getAbapDictionary(self):
+        """
+        Obtains an AbapDictionary object.
+
+        It represents the ABAP Dictionary related artifacts from parsing.
+        """
+        return self.__handler.abapDictionary
+
     def getClasses(self):
 
         return self.__handler.abapClasses
-
-    def getDataElements(self):
-
-        return self.__handler.abapDataElements
-
-    def getDomains(self):
-
-        return self.__handler.abapDomains
 
     def getFunctionGroups(self):
 
@@ -60,7 +60,3 @@ class SapLinkFileParser(object):
     def getPrograms(self):
 
         return self.__handler.abapPrograms
-    
-    def getStructures(self):
-        
-        return self.__handler.abapStructures

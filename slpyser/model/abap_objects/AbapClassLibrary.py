@@ -1,8 +1,17 @@
-'''
-Created on 04/06/2015
+"""
+Represents class library (TCode SE24) objects, which are global classes and global interfaces.
 
-@author: thales
-'''
+This module contains the definition of the following classes:
+
+ * :class:`.AbapClass`
+ * :class:`.AbapClassInterface`
+ * :class:`.AbapClassAttribute`
+ * :class:`.AbapClassMethodParameter`
+ * :class:`.AbapClassMethod`
+ * :class:`.AbapInterfaceMethod`
+"""
+
+
 from slpyser.model.abap_objects.AbapObject import AbapObject
 from slpyser.model.abap_objects.AbapSourceCode import AbapSourceCode
 from slpyser.model.abap_objects.AbapTextPool import AbapTextPool
@@ -26,21 +35,23 @@ class AbapClass(AbapObject):
                  IsFinal=None,
                  IsFixedPointArithmetic=None,
                  IsUnicode=None):
-        '''
+        """
         Constructor
-        '''
+        """
+
+        super(AbapClass, self).__init__()
 
         self.__name = Name
-        """Class name, stored in attribute CLSNAME from element CLAS."""
+        """Class's name, stored in attribute CLSNAME from element CLAS."""
 
         self.__description = Description
-        """Class description, stored in attribute DESCRIPT from element CLAS."""
+        """Class's description, stored in attribute DESCRIPT from element CLAS."""
 
         self.__parent_class_name = ParentClassName
         """Parent class, stored in attribute REFCLSNAME from element CLAS."""
 
         self.__exposure = Exposure
-        """Class exposure, stored in attribute EXPOSURE from element CLAS."""
+        """Class's exposure, stored in attribute EXPOSURE from element CLAS."""
 
         self.__original_language = OriginalLanguage
         """Original language of that class, stored in attribute LANG from element CLAS."""
@@ -98,78 +109,141 @@ class AbapClass(AbapObject):
 
     @property
     def name(self):
+        """
+        Class's name.
+        """
         return self.__name
 
     @property
-    def changed_by(self):
-        return self.__changed_by
-
-    @property
-    def changed_on(self):
-        return self.__changed_on
-
-    @property
     def created_by(self):
+        """
+        User who created the class.
+        """
         return self.__author
 
     @property
     def created_on(self):
+        """
+        Creation's date.
+        """
         return self.__created_on
 
     @property
+    def changed_by(self):
+        """
+        User who last modified the class.
+        """
+        return self.__changed_by
+
+    @property
+    def changed_on(self):
+        """
+        Date of the last modification.
+        """
+        return self.__changed_on
+
+    @property
     def description(self):
+        """
+        Class's description.
+        """
         return self.__description
 
     @property
     def parent_class(self):
+        """
+        The direct parent of this class.
+        If empty, this class have no parent.
+        """
         return self.__parent_class_name
 
     @property
     def exposure(self):
+        """
+        Class's constructor exposure.
+
+        Possible values are:
+         * '0': Private
+         * '1': Protected
+         * '2': Public
+        """
         return self.__exposure
 
     @property
     def final(self):
+        """
+        Flag to indicate this is a final class.
+        """
         return self.__final
 
     @property
     def fixed_point_arithmetic(self):
+        """
+        Flag to indicate this class uses fixed point arithmetic.
+        """
         return self.__fixed_point_arithmetic
 
     @property
     def attributes(self):
+        """
+        List of :class:`attribute <.AbapClassAttribute>`.
+        """
         return self.__attributes
 
     @property
     def methods(self):
+        """
+        List of :class:`methods <.AbapClassMethod>`.
+        """
         return self.__methods
 
     @property
     def original_language(self):
+        """
+        The 'native' language of the class.
+        """
         return self.__original_language
 
     @property
     def public_section(self):
+        """
+        The public section (:class:`source code <.AbapSourceCode>`) of the class.
+        """
         return self.__public_section
 
     @property
     def protected_section(self):
+        """
+        The protected section (:class:`source code <.AbapSourceCode>`) of the class.
+        """
         return self.__protected_section
 
     @property
     def private_section(self):
+        """
+        The private section (:class:`source code <.AbapSourceCode>`) of the class.
+        """
         return self.__private_section
-    
+
     @property
     def local_implementation(self):
+        """
+        Class's local implementation.
+        """
         return self.__local_implementation
 
     @property
     def local_macros(self):
+        """
+        Class's local macros (:class:`source code <.AbapSourceCode>`).
+        """
         return self.__local_macros
 
     @property
     def local_types(self):
+        """
+        Class's local types (:class:`source code <.AbapSourceCode>`).
+        """
         return self.__local_types
 
     @property
@@ -178,6 +252,9 @@ class AbapClass(AbapObject):
 
     @property
     def unicode(self):
+        """
+        Flag to indicate this class is unicode compliance.
+        """
         return self.__unicode
 
 
@@ -190,6 +267,9 @@ class AbapClassInterface(AbapClass):
     pass
 
 class AbapClassAttribute(AbapObject):
+    """
+    Atribute of a class.
+    """
 
     def __init__(self,
                  ClassName,
@@ -199,28 +279,49 @@ class AbapClassAttribute(AbapObject):
                  AttributeExposure,
                  AttributeType,
                  Description):
-        self.__compRefName = ClassName
+
+        super(AbapClassAttribute, self).__init__()
+        self.__comp_ref_name = ClassName
         self.__name = AttributeName
         self.__decl_type = AttributeDeclType
-        self.__typType = AttributeTypType
+        self.__typ_type = AttributeTypType
         self.__exposure = AttributeExposure
         self.__type = AttributeType
         self.__description = Description
 
     @property
     def name(self):
+        """
+        Attribute's name.
+        """
         return self.__name
 
     @property
     def decl_type(self):
+        """
+        Attribute's declaration type.
+
+        Possible values are:
+         * '0': Instance attribute
+         * '1': Static attribute
+         * '2': Constant
+        """
         return self.__decl_type
 
     @property
     def typType(self):
-        return self.__typType
+        return self.__typ_type
 
     @property
     def exposure(self):
+        """
+        Attribute's exposure.
+
+        Possible values are:
+         * '0': Private
+         * '1': Protected
+         * '2': Public
+        """
         return self.__exposure
 
     @property
@@ -229,6 +330,9 @@ class AbapClassAttribute(AbapObject):
 
     @property
     def description(self):
+        """
+        Attribute's description.
+        """
         return self.__description
 
 
@@ -244,6 +348,7 @@ class AbapClassMethodParameter(AbapObject):
                  TypType,
                  Type):
 
+        super(AbapClassMethodParameter, self).__init__()
         self.__name = Name
         self.__declaration_type = DeclType
         self.__pass_type = PassType
@@ -252,6 +357,9 @@ class AbapClassMethodParameter(AbapObject):
 
     @property
     def name(self):
+        """
+        Name of method's parameter.
+        """
         return self.__name
 
     @property
@@ -282,13 +390,13 @@ class AbapClassMethod(AbapObject):
                  DeclType,
                  Exposure,
                  Description):
-        '''
+        """
         Constructor
-        '''
+        """
 
+        super(AbapClassMethod, self).__init__()
         self.__name = Name
         self.__definition_class_name = DefinitionClassName
-        """Class which declared the method (inherited or not)."""
         self.__decl_type = DeclType
         self.__exposure = Exposure
         self.__description = Description
@@ -297,30 +405,60 @@ class AbapClassMethod(AbapObject):
 
     @property
     def name(self):
+        """
+        Method's name.
+        """
         return self.__name
 
     @property
     def definition_class_name(self):
+        """
+        Class which declared the method (inherited or not).
+        """
         return self.__definition_class_name
 
     @property
     def decl_type(self):
+        """
+        Declaration type.
+
+        Possible values are:
+         * '0': Instance method
+         * '1': Static method
+        """
         return self.__decl_type
 
     @property
     def exposure(self):
+        """
+        Method's exposure.
+
+        Possible values are:
+         * '0': Private
+         * '1': Protected
+         * '2': Public
+        """
         return self.__exposure
 
     @property
     def description(self):
+        """
+        Method's description.
+        """
         return self.__description
 
     @property
     def parameters(self):
+        """
+        List of method's parameters.
+        """
         return self.__parameters
 
     @property
     def source_code(self):
+        """
+        Method's source code.
+        """
         return self.__source_code
 
 

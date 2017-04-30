@@ -19,7 +19,7 @@ class TestDDIC(unittest.TestCase):
                              'ZSLPUT_DATAELEMENT_REFOBJECT',
                              'ZSLPUT_DATAELEMENT_REFTYPE'):
             self.assertIn(data_element, data_elements_keys)
-        
+
         structures = ddic.structures
         self.assertIn('ZSLPUT_STRUCTURE', structures)
 

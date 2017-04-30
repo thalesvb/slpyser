@@ -19,7 +19,7 @@ class AbapMessageClass(AbapObject):
         """
         Constructor
         """
-
+        super(AbapMessageClass, self).__init__()
         self.__name = Name
         self.__original_language = OriginalLanguage
         self.__responsible = Responsible
@@ -53,7 +53,7 @@ class AbapMessageClass(AbapObject):
                      Language,
                      Number,
                      Text):
-
+            super(AbapMessageClass.Message, self).__init__()
             self.__language = Language
             self.__number = Number
             self.__text = Text

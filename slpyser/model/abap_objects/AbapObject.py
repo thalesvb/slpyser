@@ -1,17 +1,15 @@
-'''
-Created on 04/06/2015
-
-@author: thales
-'''
+"""
+Definition of AbapObject class.
+"""
 
 
 class AbapObject:
-    '''
-    classdocs
-    '''
+    """
+    Root class for every repository object parsed from SAPLink.
+    """
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         pass

@@ -1,20 +1,28 @@
-'''
-Created on 08/06/2015
+"""
+Definition of AbapTextPool, AbapTextElement, AbapClassDocumentation and AbapTextLine classes.
+"""
 
-@author: thales
-'''
+
 from slpyser.model.abap_objects.AbapObject import AbapObject
 
 
 class AbapTextPool(AbapObject):
     """
-    TextPools are represented by nested dictionaries.
+    Text pools are represented by nested dictionaries.
+
+    The first level dictionary maps the language, while the second one maps the SAP textpool keys
+    to its corresponding value for that language.
+
+    This corresponds to what is seen while editing text pools: the current logon language is used
+    to see, create and edit, while it's necessary to use the translation transaction to see the
+    values in other languages (or a new logon using another language).
     """
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
+        super(AbapTextPool, self).__init__()
         self.__language_mapping = {}
 
     @property
@@ -38,6 +46,7 @@ class AbapTextElement(AbapObject):
                  TextEntry,
                  Length):
 
+        super(AbapTextElement, self).__init__()
         self.__id = TextId
         self.__key = TextKey
         self.__entry = TextEntry
@@ -70,6 +79,7 @@ class AbapClassDocumentation(AbapObject):
 
     def __init__(self,
                  ClassObjectRef):
+        super(AbapClassDocumentation, self).__init__()
         self.__class_object_ref = ClassObjectRef
         self.__language_mapping = {}
 
