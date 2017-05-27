@@ -1,11 +1,10 @@
-'''
-Created on 17/06/2015
+# -*- coding: utf-8 -*-
+"""
+Contains models classes representing data parsed from SAPLink files.
+"""
 
-@author: thales
-'''
 
-
-class SapLinkFile:
+class SapLinkFile(object):
     """
     Represents a parsed file from SAPLink xml syntax.
     Its subclasses tells which file type was the original file.
@@ -14,11 +13,11 @@ class SapLinkFile:
 
     def __init__(self,
                  FilePath):
-        self.__filePath = FilePath
+        self.__file_path = FilePath
 
     @property
     def file_path(self):
-        return self.__filePath
+        return self.__file_path
 
 
 class NuggetFile(SapLinkFile):

@@ -157,28 +157,28 @@ class DDICHandler(AbstractHandler):
         self.__logger.debug('End domain declaration')
 
     def _startDomainDefinition(self, name, attrs):
-            self.__logger.debug('Start domain definition')
-            domain_name = attrs.get('DOMNAME', '')
-            language = attrs.get('DDLANGUAGE', '')
-            description = attrs.get('DDTEXT', '')
-            data_type = attrs.get('DATA_TYPE', '')
-            length = attrs.get('LENG','')
-            output_length = attrs.get('OUTPUTLEN', '')
-            decimals = attrs.get('DECIMALS', '')
-            lower_case = attrs.get('LOWERCASE', '')
-            mask_length = attrs.get('MASKLEN', '')
+        self.__logger.debug('Start domain definition')
+        domain_name = attrs.get('DOMNAME', '')
+        language = attrs.get('DDLANGUAGE', '')
+        description = attrs.get('DDTEXT', '')
+        data_type = attrs.get('DATA_TYPE', '')
+        length = attrs.get('LENG', '')
+        output_length = attrs.get('OUTPUTLEN', '')
+        decimals = attrs.get('DECIMALS', '')
+        lower_case = attrs.get('LOWERCASE', '')
+        mask_length = attrs.get('MASKLEN', '')
 
-            domain = AbapDomain(Name=domain_name,
-                                OriginalLanguage=language,
-                                Description=description,
-                                DataType=data_type,
-                                Length=length,
-                                OutputLength=output_length,
-                                Decimals=decimals,
-                                LowerCase=lower_case,
-                                MaskLength=mask_length)
-            
-            self._abap_ddic_domain[domain_name] = domain
+        domain = AbapDomain(Name=domain_name,
+                            OriginalLanguage=language,
+                            Description=description,
+                            DataType=data_type,
+                            Length=length,
+                            OutputLength=output_length,
+                            Decimals=decimals,
+                            LowerCase=lower_case,
+                            MaskLength=mask_length)
+
+        self._abap_ddic_domain[domain_name] = domain
 
     def _endDomainDefinition(self, name):
         self.__logger.debug('End domain definition')
@@ -210,7 +210,7 @@ class DDICHandler(AbstractHandler):
         decimals = attrs.get('DECIMALS')
         mask = attrs.get('MASK')
         mask_length = attrs.get('MASKLEN')
-        
+
         structure_attribute = AbapTypeStructure.AbapStructureField(Name=field_name,
                                                                    Position=position,
                                                                    DataType=data_type)

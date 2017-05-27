@@ -120,59 +120,58 @@ class ClassLibraryHandler(AbstractHandler):
         original_language = attrs.get('LANGU', '')
         final = attrs.get('CLSFINAL', '')
         fixed_point_arithmetic = attrs.get('FIXPT', '')
-        parentClassName = attrs.get('REFCLSNAME', '')
+        parent_class_name = attrs.get('REFCLSNAME', '')
         unicode = attrs.get('UNICODE', '')
 
-        abapClass = AbapClass(Name=name,
-                              Author=author,
-                              CreatedOn=created_on,
-                              ChangedBy=changed_by,
-                              ChangedOn=changed_on,
-                              Exposure=exposure,
-                              OriginalLanguage=original_language,
-                              Description=description,
-                              ParentClassName=parentClassName,
-                              IsFinal=final,
-                              IsFixedPointArithmetic=fixed_point_arithmetic,
-                              IsUnicode=unicode)
+        abap_class = AbapClass(Name=name,
+                               Author=author,
+                               CreatedOn=created_on,
+                               ChangedBy=changed_by,
+                               ChangedOn=changed_on,
+                               Exposure=exposure,
+                               OriginalLanguage=original_language,
+                               Description=description,
+                               ParentClassName=parent_class_name,
+                               IsFinal=final,
+                               IsFixedPointArithmetic=fixed_point_arithmetic,
+                               IsUnicode=unicode)
 
-        self.__current_class = abapClass
-        self.__owner.set_current_textpool_reference(abapClass.text_pool)
+        self.__current_class = abap_class
+        self.__owner.set_current_textpool_reference(abap_class.text_pool)
 
     def _endClass(self, name):
         self.__logger.debug('End class ' + name)
         self.__abap_classes[self.__current_class.name] = self.__current_class
         self.__current_class = None
-        #self.__current_text_pool_reference = None
         self.__owner.finalize_textpool()
 
     def _startClassAttribute(self, name, attrs):
         self.__logger.debug('Start class attribute')
-        classRefName = attrs.get('CLSNAME', '')
-        componentName = attrs.get('CMPNAME', '')
+        class_ref_name = attrs.get('CLSNAME', '')
+        component_name = attrs.get('CMPNAME', '')
         description = attrs.get('DESCRIPT', '')
-        declarationType = attrs.get('ATTDECLTYP', '')
+        declaration_type = attrs.get('ATTDECLTYP', '')
         exposure = attrs.get('EXPOSURE', '')
-        typType = attrs.get('TYPTYPE', '')
-        attrType = attrs.get('TYPE', '')
+        typ_type = attrs.get('TYPTYPE', '')
+        attr_type = attrs.get('TYPE', '')
 
-        classAttribute = AbapClassAttribute(ClassName=classRefName,
-                                            AttributeName=componentName,
-                                            AttributeDeclType=declarationType,
-                                            AttributeTypType=typType,
-                                            AttributeExposure=exposure,
-                                            AttributeType=attrType,
-                                            Description=description)
-        self.__current_class.attributes[componentName] = classAttribute
+        class_attribute = AbapClassAttribute(ClassName=class_ref_name,
+                                             AttributeName=component_name,
+                                             AttributeDeclType=declaration_type,
+                                             AttributeTypType=typ_type,
+                                             AttributeExposure=exposure,
+                                             AttributeType=attr_type,
+                                             Description=description)
+        self.__current_class.attributes[component_name] = class_attribute
 
     def _endClassAttribute(self, name):
         self.__logger.debug('End class attribute')
 
     def _startClassDocumentation(self, name, attrs):
         self.__logger.debug('Start class documentation')
-        classObject = attrs.get('OBJECT')
-        classDocumentation = AbapClassDocumentation(ClassObjectRef=classObject)
-        self.__current_class_documentation_reference = classDocumentation
+        class_object = attrs.get('OBJECT')
+        class_documentation = AbapClassDocumentation(ClassObjectRef=class_object)
+        self.__current_class_documentation_reference = class_documentation
 
     def _endClassDocumentation(self, name):
         self.__logger.debug('End class documentation')
@@ -197,47 +196,47 @@ class ClassLibraryHandler(AbstractHandler):
         original_language = attrs.get('LANGU', '')
         final = attrs.get('CLSFINAL', '')
         fixed_point_arithmetic = attrs.get('FIXPT', '')
-        parentClassName = attrs.get('REFCLSNAME', '')
+        parent_class_name = attrs.get('REFCLSNAME', '')
         unicode = attrs.get('UNICODE', '')
 
-        abapClassInterface = AbapClassInterface(Name=name,
-                              Author=author,
-                              CreatedOn=created_on,
-                              ChangedBy=changed_by,
-                              ChangedOn=changed_on,
-                              Exposure=exposure,
-                              OriginalLanguage=original_language,
-                              Description=description,
-                              ParentClassName=parentClassName,
-                              IsFinal=final,
-                              IsFixedPointArithmetic=fixed_point_arithmetic,
-                              IsUnicode=unicode)
+        class_interface = AbapClassInterface(Name=name,
+                                             Author=author,
+                                             CreatedOn=created_on,
+                                             ChangedBy=changed_by,
+                                             ChangedOn=changed_on,
+                                             Exposure=exposure,
+                                             OriginalLanguage=original_language,
+                                             Description=description,
+                                             ParentClassName=parent_class_name,
+                                             IsFinal=final,
+                                             IsFixedPointArithmetic=fixed_point_arithmetic,
+                                             IsUnicode=unicode)
 
-        self.__current_class = abapClassInterface
-        self.__current_text_pool_reference = abapClassInterface.text_pool
+        self.__current_class = class_interface
+        self.__owner.set_current_textpool_reference(class_interface.text_pool)
 
     def _endClassInterface(self, name):
         self.__logger.debug('End class interface')
         self.__abap_classes[self.__current_class.name] = self.__current_class
         self.__current_class = None
-        self.__current_text_pool_reference = None
+        self.__owner.finalize_textpool()
 
     def _startClassMethod(self, name, attrs):
         self.__logger.debug('Start class method')
         name = attrs.get('CMPNAME')
         definition_class_name = attrs.get('CLSNAME', '')
-        declarationType = attrs.get('MTDDECLTYP', '')
+        declaration_type = attrs.get('MTDDECLTYP', '')
         exposure = attrs.get('EXPOSURE', '')
         description = attrs.get('DESCRIPT', '')
 
-        classMethod = AbapClassMethod(Name=name,
-                                      DefinitionClassName=definition_class_name,
-                                      DeclType=declarationType,
-                                      Exposure=exposure,
-                                      Description=description)
+        class_method = AbapClassMethod(Name=name,
+                                       DefinitionClassName=definition_class_name,
+                                       DeclType=declaration_type,
+                                       Exposure=exposure,
+                                       Description=description)
 
-        self.__current_class.methods[classMethod.name] = classMethod
-        self.__owner.set_current_source_code_reference(classMethod.source_code)
+        self.__current_class.methods[class_method.name] = class_method
+        self.__owner.set_current_source_code_reference(class_method.source_code)
 
     def _endClassMethod(self, name):
         self.__logger.debug('End class method')
@@ -257,12 +256,12 @@ class ClassLibraryHandler(AbstractHandler):
         if name == 'EXCEPTION':
             decl_type = 'EXCP'
 
-        methodParameter = AbapClassMethodParameter(Name=param_name,
-                                                   DeclType=decl_type,
-                                                   PassType=pass_type,
-                                                   TypType=typ_type,
-                                                   Type=type_)
-        self.__current_class.methods[ref_method].parameters[param_name] = methodParameter
+        method_parameter = AbapClassMethodParameter(Name=param_name,
+                                                    DeclType=decl_type,
+                                                    PassType=pass_type,
+                                                    TypType=typ_type,
+                                                    Type=type_)
+        self.__current_class.methods[ref_method].parameters[param_name] = method_parameter
 
     def _startClassMethodRedefinition(self, name, attrs):
         self.__logger.debug('Start Method Redefinition')
@@ -305,7 +304,7 @@ class ClassLibraryHandler(AbstractHandler):
     def _startClassLocalTypes(self, name, attrs):
         self.__logger.debug('Start class local types')
         self.__owner.set_current_source_code_reference(self.__current_class.local_types)
-        
+
     def _endClassLocalTypes(self, name):
         self.__logger.debug('End class local types')
         self.__owner.finalize_source_code()
@@ -322,18 +321,18 @@ class ClassLibraryHandler(AbstractHandler):
         self.__logger.debug('Start interface method')
         name = attrs.get('CPDNAME')
         definition_class_name = attrs.get('CLSNAME', '')
-        declarationType = attrs.get('MTDDECLTYP', '')
+        declaration_type = attrs.get('MTDDECLTYP', '')
         exposure = attrs.get('EXPOSURE', '')
         description = attrs.get('DESCRIPT', '')
 
-        interfaceMethod = AbapClassMethod(Name=name,
-                                          DefinitionClassName=definition_class_name,
-                                          DeclType=declarationType,
-                                          Exposure=exposure,
-                                          Description=description)
+        interface_method = AbapClassMethod(Name=name,
+                                           DefinitionClassName=definition_class_name,
+                                           DeclType=declaration_type,
+                                           Exposure=exposure,
+                                           Description=description)
 
-        self.__current_class.methods[interfaceMethod.name] = interfaceMethod
-        self.__owner.set_current_source_code_reference(interfaceMethod.source_code)
+        self.__current_class.methods[interface_method.name] = interface_method
+        self.__owner.set_current_source_code_reference(interface_method.source_code)
 
     def _endInterfaceMethod(self, name):
         self.__logger.debug('End interface method')

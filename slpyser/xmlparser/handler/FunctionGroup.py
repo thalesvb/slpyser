@@ -118,34 +118,26 @@ class FunctionGroupHandler(AbstractHandler):
 
         main_program = AbapFunctionGroupMainProgram(Name=name)
         self.__current_function_group.include_programs['MAIN'] = main_program
-        # self.__current_source_code_reference = main_program.source
-        # self.__current_source_code_reference.source_code = []
         self.__owner.set_current_source_code_reference(main_program.source)
 
     def _endFunctionGroupMainProgram(self, name):
         self.__logger.debug('End function group main program')
-        # self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
-        # self.__current_source_code_reference = None
         self.__owner.finalize_source_code()
 
     def _startFunctionModule(self, name, attrs):
         self.__logger.debug('Start function module')
         name = attrs.get('NAME')
         description = attrs.get('STEXT')
-        functionModule = AbapFunctionModule(FunctionGroup=self.__current_function_group,
-                                            Name=name,
-                                            Description=description)
-        self.__current_function_module = functionModule
-        # self.__current_source_code_reference = functionModule.source_code
-        # self.__current_source_code_reference.source_code = []
-        self.__owner.set_current_source_code_reference(functionModule.source_code)
+        function_module = AbapFunctionModule(FunctionGroup=self.__current_function_group,
+                                             Name=name,
+                                             Description=description)
+        self.__current_function_module = function_module
+        self.__owner.set_current_source_code_reference(function_module.source_code)
 
     def _endFunctionModule(self, name):
         self.__logger.debug('End function module')
         self.__current_function_group.function_modules[self.__current_function_module.name] = self.__current_function_module
         self.__current_function_module = None
-        # self.__current_source_code_reference.source_code = ''.join(self.__current_source_code_reference.source_code)
-        # self.__current_source_code_reference = None
         self.__owner.finalize_source_code()
 
     def _startFunctionModuleSourceCode(self, name, attrs):
@@ -156,8 +148,8 @@ class FunctionGroupHandler(AbstractHandler):
 
     def _startFunctionModuleException(self, name, attrs):
         self.__logger.debug('Start function module exception')
-        exceptionName = attrs.get('EXCEPTION', '')
-        self.__current_function_module.exceptions[exceptionName] = exceptionName
+        exception_name = attrs.get('EXCEPTION', '')
+        self.__current_function_module.exceptions[exception_name] = exception_name
 
     def _startFunctionModuleParameter(self, name, attrs):
         """
@@ -169,19 +161,19 @@ class FunctionGroupHandler(AbstractHandler):
         optional = attrs.get('OPTIONAL', '')
         typ = attrs.get('TYP', '')
         default_value = attrs.get('DEFAULT', '')
-        functionParameter = AbapFunctionModule.AbapFunctionModuleParameter(Parameter=parameter,
-                                                                           IsReference=reference,
-                                                                           IsOptional=optional,
-                                                                           Type=typ,
-                                                                           DefaultValue=default_value)
+        function_parameter = AbapFunctionModule.AbapFunctionModuleParameter(Parameter=parameter,
+                                                                            IsReference=reference,
+                                                                            IsOptional=optional,
+                                                                            Type=typ,
+                                                                            DefaultValue=default_value)
         if name == 'importing':
-            self.__current_function_module.parameters_importing[parameter] = functionParameter
+            self.__current_function_module.parameters_importing[parameter] = function_parameter
         elif name == 'exporting':
-            self.__current_function_module.parameters_exporting[parameter] = functionParameter
+            self.__current_function_module.parameters_exporting[parameter] = function_parameter
         elif name == 'changing':
-            self.__current_function_module.parameters_changing[parameter] = functionParameter
+            self.__current_function_module.parameters_changing[parameter] = function_parameter
         elif name == 'tables':
-            self.__current_function_module.parameters_tables[parameter] = functionParameter
+            self.__current_function_module.parameters_tables[parameter] = function_parameter
 
     def _endFunctionModuleParameter(self, name):
         self.__logger.debug('End function module parameter: %s', name)
