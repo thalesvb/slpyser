@@ -1,8 +1,5 @@
-'''
-Created on 04/06/2015
+# -*- coding: utf-8 -*-
 
-@author: thales
-'''
 import logging
 import xml.sax
 import slpyser.xmlparser.handlers as handlers
@@ -121,26 +118,26 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
         # Upper case on name because SAPLINK haven't used same case on all elements.
         self.__current_tag = name.upper()
         self.__current_tag_stack.append(self.__current_tag)
-        startElementHandler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[0]
-        if startElementHandler is not None:
-            startElementHandler(name.upper(), attrs)
+        start_element_handler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[0]
+        if start_element_handler is not None:
+            start_element_handler(name.upper(), attrs)
 
     def characters(self, content):
         """
         Parses inner contents of current element.
         This method is called for each new line inside that element.
         """
-        charactersHandler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[1]
-        if charactersHandler is not None:
-            charactersHandler(content)
+        characters_handler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[1]
+        if characters_handler is not None:
+            characters_handler(content)
 
     def endElement(self, name):
         """Parses end of element."""
         if self.__current_tag != name.upper():
-            self.__logger.error('ERROR parsing file, current element was %s but closing element was %s' % (self.__current_tag, name.upper()))
-        endElementHandler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[2]
-        if endElementHandler is not None:
-            endElementHandler(name.upper())
+            self.__logger.error('ERROR parsing file, current element was %s but closing element was %s' , self.__current_tag, name.upper())
+        end_element_handler = self._matrix_element_case_handler.get(self.__current_tag, self.__unhandled_element)[2]
+        if end_element_handler is not None:
+            end_element_handler(name.upper())
         self.__current_tag_stack.pop()
         # FIXME: Append None to currentTagStack to avoid little hack?
         self.__current_tag = self.__current_tag_stack[-1] if len(self.__current_tag_stack) > 0 else None
@@ -219,19 +216,19 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     def _startTextPoolTextElement(self, name, attrs):
         self.__logger.debug('Start Text Pool Text Element')
-        textId = attrs.get('ID')
+        text_id = attrs.get('ID')
         key = attrs.get('KEY')
         entry = attrs.get('ENTRY')
         length = attrs.get('LENGTH')
-        textElement = AbapTextElement(TextId=textId,
-                                      TextKey=key,
-                                      TextEntry=entry,
-                                      Length=length)
+        text_element = AbapTextElement(TextId=text_id,
+                                       TextKey=key,
+                                       TextEntry=entry,
+                                       Length=length)
         if self.__current_text_pool_reference is not None:
             self.__current_text_pool_reference.addTextElement(Language=self.__current_text_language,
-                                                              TextElement=textElement)
+                                                              TextElement=text_element)
         else:
-            self.__logger.warn('[FIXME] A text pool''s entry "%s" was found but the current abap object wasn''t expecting a text pool.', entry)
+            self.__logger.warning('[FIXME] A text pool''s entry "%s" was found but the current abap object wasn''t expecting a text pool.', entry)
 
     def _charactersTextPoolTextElement(self, content):
         pass
