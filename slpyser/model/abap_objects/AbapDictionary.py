@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Represents ABAP Dictionary (SE11) objects.BaseException
 
@@ -46,6 +47,16 @@ class AbapDictionary:
         See :class:`.AbapTypeStructure`.
         """
         return self.__structures
+
+    @classmethod
+    def from_ddic_handler(cls, ddic_handler):
+        """
+        Creates a instance of :class:`.AbapDictionary` from
+        :class:`slpyser.xmlparser.handler.DDIC.DDICHandler`.
+        """
+        return AbapDictionary(Domains=ddic_handler.parsed_domains,
+                              DataElements=ddic_handler.parsed_data_elements,
+                              Structures=ddic_handler.parsed_structures)
 
 
 class AbapDataElement(AbapObject):

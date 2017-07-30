@@ -110,9 +110,7 @@ class SAPLinkContentHandle(xml.sax.ContentHandler):
 
     @property
     def abapDictionary(self):
-        return AbapDictionary(Domains=self.__ddic_parser.parsed_domains,
-                              DataElements=self.__ddic_parser.parsed_data_elements,
-                              Structures=self.__ddic_parser.parsed_structures)
+        return AbapDictionary.from_ddic_handler(self.__ddic_parser)
 
     @property
     def abapPrograms(self):
